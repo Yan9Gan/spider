@@ -1,7 +1,11 @@
 from urllib.parse import urlencode
 import requests
-from pyquery import PyQuery as pq
+from pymongo import MongoClient
 
+
+client = MongoClient()
+db = client['weibo']
+collection = db['weibo']
 
 base_url = 'https://m.weibo.cn/api/container/getIndex?'
 headers = {
@@ -43,13 +47,18 @@ def parse_page(json):
                 yield weibo
 
 
+def save_to_mongo(result):
+    if collection.insert(result):
+        print('Saved to Mongo')
+
+
 if __name__ == '__main__':
     for page in range(1, 11):
         json = get_page(page)
         results = parse_page(json)
         for result in results:
-            # TODO：保存数据到MongoDB
             print(result)
+            save_to_mongo(result)
 
 
 
