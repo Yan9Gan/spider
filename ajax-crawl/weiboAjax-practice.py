@@ -34,7 +34,7 @@ def get_page(page):
 
 def parse_page(json):
     if json:
-        items = json.get('data').get('cards')
+        items = json.get('images').get('cards')
         for item in items:
             item = item.get('mblog')
             if item:

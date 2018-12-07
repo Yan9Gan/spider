@@ -12,7 +12,7 @@ items = doc('.explore-tab .feed-item').items()
 for item in items:
     question = item.find('h2').text()
     author = item.find('.author-link-line').text()
-    with open('../data/explore.txt', 'a', encoding='utf-8') as f:
+    with open('../images/explore.txt', 'a', encoding='utf-8') as f:
         f.write('\n'.join([question, author]))
         f.write('\n' + '=' * 50 + '\n')
 

@@ -14,7 +14,7 @@ import re
 # r = requests.get('https://github.com/favicon.ico')
 # # print(r.text)  # 乱码
 # # print(r.content)  # bytes类型
-# with open('../data/github-favicon.ico', 'wb') as f:
+# with open('../images/github-favicon.ico', 'wb') as f:
 #     f.write(r.content)
 
 

@@ -2,14 +2,14 @@ import tesserocr
 from PIL import Image
 
 
-# image = Image.open('../data/code.jpg')
+# image = Image.open('../images/code.jpg')
 # result = tesserocr.image_to_text(image)
 # print(result)
 
-# print(tesserocr.file_to_text('../data/code.jpg'))
+# print(tesserocr.file_to_text('../images/code.jpg'))
 
 
-image = Image.open('../data/code2.jpg')
+image = Image.open('../images/code2.jpg')
 image = image.convert('L')
 threshold = 140
 table = []

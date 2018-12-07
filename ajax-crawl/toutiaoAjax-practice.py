@@ -26,8 +26,8 @@ def get_page(offset):
 
 
 def get_images(json):
-    if json.get('data'):
-        for item in json.get('data'):
+    if json.get('images'):
+        for item in json.get('images'):
             title = item.get('title')
             images = item.get('image_list')
             if images:
@@ -39,7 +39,7 @@ def get_images(json):
 
 
 def save_image(item):
-    base_path = '../data/toutiaoImages'
+    base_path = '../images/toutiaoImages'
     if not os.path.exists(os.path.join(base_path, item.get('title'))):
         os.mkdir(os.path.join(base_path, item.get('title')))
     try:

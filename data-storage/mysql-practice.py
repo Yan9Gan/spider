@@ -5,8 +5,8 @@ import pymysql
 # db = pymysql.connect(host='localhost', user='root', password='mysql', port=3306)
 # cursor = db.cursor()
 # cursor.execute('SELECT VERSION()')
-# data = cursor.fetchone()
-# print('Database version:', data)
+# images = cursor.fetchone()
+# print('Database version:', images)
 # cursor.execute('CREATE DATABASE spider DEFAULT CHARACTER SET utf8')
 # db.close()
 
@@ -33,17 +33,17 @@ cursor = db.cursor()
 #     db.rollback()  # 报错就数据回滚
 # db.close()
 
-# data = {
+# images = {
 #     'id': '20120004',
 #     'name': 'Alice',
 #     'age': 24
 # }
 # table = 'students'
-# keys = ','.join(data.keys())
-# values = ','.join(['%s'] * len(data))
+# keys = ','.join(images.keys())
+# values = ','.join(['%s'] * len(images))
 # sql = 'INSERT INTO {table} ({keys}) VALUES ({values})'.format(table=table, keys=keys, values=values)
 # try:
-#     if cursor.execute(sql, tuple(data.values())):
+#     if cursor.execute(sql, tuple(images.values())):
 #         print('Successful')
 #         db.commit()
 # except:
@@ -62,22 +62,22 @@ cursor = db.cursor()
 # db.close()
 
 
-# data = {
+# images = {
 #     'id': '20120002',
 #     'name': 'John',
 #     'age': 18
 # }
 #
 # table = 'students'
-# keys = ','.join(data.keys())
-# values = ','.join(['%s'] * len(data))
+# keys = ','.join(images.keys())
+# values = ','.join(['%s'] * len(images))
 #
 # sql = 'INSERT INTO {table} ({keys}) VALUES ({values}) ON DUPLICATE KEY UPDATE '.\
 #     format(table=table, keys=keys, values=values)
-# update = ','.join(["{key}=%s".format(key=key) for key in data])
+# update = ','.join(["{key}=%s".format(key=key) for key in images])
 # sql += update
 # try:
-#     if cursor.execute(sql, tuple(data.values())*2):
+#     if cursor.execute(sql, tuple(images.values())*2):
 #         print('Successful')
 #         db.commit()
 # except:

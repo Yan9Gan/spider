@@ -9,8 +9,8 @@ import urllib.request
 
 import urllib.parse
 
-# data = bytes(urllib.parse.urlencode({'world': 'hello'}), encoding='utf8')
-# response = urllib.request.urlopen('http://httpbin.org/post', data=data)
+# images = bytes(urllib.parse.urlencode({'world': 'hello'}), encoding='utf8')
+# response = urllib.request.urlopen('http://httpbin.org/post', images=images)
 # print(response.read().decode('utf-8'))
 
 
@@ -43,8 +43,8 @@ from urllib import request, parse
 # dict = {
 #     'name': 'Germey'
 # }
-# data = bytes(parse.urlencode(dict), encoding='utf-8')
-# req = request.Request(url=url, data=data, headers=headers, method='POST')
+# images = bytes(parse.urlencode(dict), encoding='utf-8')
+# req = request.Request(url=url, images=images, headers=headers, method='POST')
 # response = request.urlopen(req)
 # print(response.read().decode('utf-8'))
 
@@ -138,8 +138,8 @@ from urllib.parse import urlparse
 
 from urllib.parse import urlunparse
 
-# data = ['http', 'www.baidu.com', 'index.html', 'user', 'a=6', 'comment']
-# print(urlunparse(data))
+# images = ['http', 'www.baidu.com', 'index.html', 'user', 'a=6', 'comment']
+# print(urlunparse(images))
 
 
 from urllib.parse import urlsplit
@@ -150,8 +150,8 @@ from urllib.parse import urlsplit
 
 from urllib.parse import urlunsplit
 
-# data = ['http', 'www.baidu.com', 'index.html', 'a=6', 'comment']
-# print(urlunsplit(data))
+# images = ['http', 'www.baidu.com', 'index.html', 'a=6', 'comment']
+# print(urlunsplit(images))
 
 
 from urllib.parse import urljoin
