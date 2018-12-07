@@ -66,3 +66,5 @@ class ImagePipeline(ImagesPipeline):
     def get_media_requests(self, item, info):
         yield Request(item['url'])
 
+# TODO：保存MongoDB
+
