@@ -65,8 +65,9 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'images360.pipelines.ImagePipeline': 300,
-    'images360.pipelines.MysqlPipeline': 302,
+    # 'images360.pipelines.ImagePipeline': 300,
+    'images360.pipelines.MongoPipeline': 301,
+    # 'images360.pipelines.MysqlPipeline': 302,
 }
 
 IMAGES_STORE = './images'
@@ -92,10 +93,13 @@ IMAGES_STORE = './images'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-MAX_PAGE = 5
+MAX_PAGE = 50
 
 MYSQL_HOST = 'localhost'
 MYSQL_DATABASE = 'images360'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = 'mysql'
+
+MONGO_URI = 'localhost'
+MONGO_DB = 'images360'
