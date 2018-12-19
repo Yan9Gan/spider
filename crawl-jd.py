@@ -24,6 +24,7 @@ for item in ul.find_elements_by_class_name('gl-item'):
     name = ' '.join(name.split(' ')[2:])
     print(href)
     print(price, '-', name)
+
     sql = 'INSERT INTO ipad(name, price, link) values (%s, %s, %s)'
     try:
         cursor.execute(sql, (name, price, href))
