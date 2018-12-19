@@ -74,6 +74,8 @@ def get_page(pn):
 def parse_page(json, pn):
     if json:
         base_path = os.path.abspath('.')
+        if not os.path.exists(os.path.join(base_path, 'kobe-images')):
+            os.mkdir(os.path.join(base_path, 'kobe-images'))
         items = json.get('data')
         for i, item in enumerate(items):
             image_url = item.get('thumbURL')
