@@ -8,7 +8,13 @@ from multiprocessing.pool import Pool
 import json
 import math
 import re
+from pymongo import MongoClient
+import uuid
 
+
+client = MongoClient()
+db = client['kobe']
+collection = db['kobe']
 
 base_url = 'https://image.baidu.com/search/acjson?'
 headers = {
@@ -78,14 +84,24 @@ def parse_page(json, pn):
             os.mkdir(os.path.join(base_path, 'kobe-images'))
         items = json.get('data')
         for i, item in enumerate(items):
+            kobe = {}
             image_url = item.get('thumbURL')
+            kobe['_id'] = uuid.uuid1()
+            kobe['title'] = item.get('fromPageTitleEnc')
             if image_url:
                 req = urllib.request.urlopen(image_url)
                 buf = req.read()
                 file_path = os.path.join(base_path, 'kobe-images', str(pn + i + 1) + '.jpg')
+                kobe['path'] = file_path
                 if not os.path.exists(file_path):
                     with open(file_path, 'wb') as f:
                         f.write(buf)
+                save_to_mongo(kobe)
+
+
+def save_to_mongo(result):
+    if collection.insert(result):
+        print('Saved to Mongo')
 
 
 def get_gsm(n):
@@ -111,18 +127,18 @@ GROUP_END = 20
 if __name__ == '__main__':
     import datetime
 
-    # print(datetime.datetime.now())
-    # for i in range(GROUP_START, GROUP_END):
-    #     main(i*30)
-    # print(datetime.datetime.now())
+    print(datetime.datetime.now())
+    for i in range(GROUP_START, GROUP_END):
+        main(i*30)
+    print(datetime.datetime.now())
 
-    print(datetime.datetime.now())
-    pool = Pool()
-    group = [x * 30 for x in range(GROUP_START, GROUP_END)]
-    pool.map(main, group)
-    pool.close()
-    pool.join()
-    print(datetime.datetime.now())
+    # print(datetime.datetime.now())
+    # pool = Pool()
+    # group = [x * 30 for x in range(GROUP_START, GROUP_END)]
+    # pool.map(main, group)
+    # pool.close()
+    # pool.join()
+    # print(datetime.datetime.now())
 
 
 
