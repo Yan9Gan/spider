@@ -49,7 +49,7 @@ class ZufangSpider(scrapy.Spider):
                     continue
                 self.allUrlList.append(response.url + 'i3'+str(index+1)+'/')
 
-        self.logger.info('per page url', self.allUrlList)
+        # self.logger.info('per page url', self.allUrlList)
 
         if len(self.headUrlList) == 0:
             url = self.allUrlList.pop(0)
