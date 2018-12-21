@@ -13,7 +13,7 @@ class ZufangItem(scrapy.Item):
     # name = scrapy.Field()
 
     title = scrapy.Field()
-    room = scrapy.Field()
+    rooms = scrapy.Field()
     area = scrapy.Field()
     price = scrapy.Field()
     address = scrapy.Field()

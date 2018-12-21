@@ -38,16 +38,7 @@ class MongoPipeline():
         self.collection = item['region']
         if item['region'] == '不限':
             item['region'] = item['address'][0:2]
-        self.db[self.collection].insert({
-            "title": item["title"].strip(),
-            "rooms": item["rooms"],
-            "area": item["area"],
-            "price": item["price"],
-            "address": item["address"],
-            "traffic": item["traffic"],
-            "region": item["region"],
-            "direction": item["direction"],
-        })
+        self.db[self.collection].insert(dict(item))
 
         return item
 

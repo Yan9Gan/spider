@@ -73,9 +73,9 @@ class ZufangSpider(scrapy.Spider):
                 title = None
 
             try:
-                room = roomMsg[1].strip()
+                rooms = roomMsg[1].strip()
             except:
-                room = None
+                rooms = None
 
             try:
                 area = roomMsg[2].strip()[:len(roomMsg[2]) - 1]
@@ -109,7 +109,7 @@ class ZufangSpider(scrapy.Spider):
                 direction = None
 
             item['title'] = title
-            item['room'] = room
+            item['rooms'] = rooms
             item['area'] = area
             item['price'] = price
             item['address'] = address
@@ -118,6 +118,7 @@ class ZufangSpider(scrapy.Spider):
             item['direction'] = direction
 
             print(item)
+            yield item
         if len(self.allUrlList) != 0:
             url = self.allUrlList.pop(0)
             yield Request(url, callback=self.parse, dont_filter=True)
