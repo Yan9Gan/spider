@@ -24,12 +24,10 @@ class ZufangSpider(scrapy.Spider):
         for area in areas:
             if area.text == '不限':
                 self.headUrlList.append(self.baseUrl)
-                self.allUrlList.append(self.baseUrl)
-            elif '周边' in area.text:
                 continue
-            else:
-                self.headUrlList.append(self.baseUrl + area['href'])
-                self.allUrlList.append(self.baseUrl + area['href'])
+            if '周边' in area.text:
+                continue
+            self.headUrlList.append(self.baseUrl + area['href'])
 
         # self.logger.info('area root url', self.allUrlList)
 
@@ -51,11 +49,11 @@ class ZufangSpider(scrapy.Spider):
                     continue
                 self.allUrlList.append(response.url + 'i3'+str(index+1)+'/')
 
-        # self.logger.info('per page url', self.allUrlList)
+        self.logger.info('per page url', self.allUrlList)
 
         if len(self.headUrlList) == 0:
             url = self.allUrlList.pop(0)
-            self.logger.info(url)
+            # self.logger.info(url)
             yield Request(url, callback=self.parse, dont_filter=True)
         else:
             url = self.headUrlList.pop(0)
