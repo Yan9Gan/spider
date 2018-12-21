@@ -18,7 +18,7 @@ class ZufangSpider(scrapy.Spider):
         return [scrapy.FormRequest(start_url, callback=self.head_url_callback)]
 
     def head_url_callback(self, response):
-        soup = BeautifulSoup(response.body, 'lxml')
+        soup = BeautifulSoup(response.body, 'html5lib')
         dl = soup.find_all('dl', attrs={'id': 'rentid_D04_01'})
         areas = dl[0].find_all('a')
         for area in areas:
@@ -35,7 +35,7 @@ class ZufangSpider(scrapy.Spider):
         yield Request(url, callback=self.all_url_callback, dont_filter=True)
 
     def all_url_callback(self, response):
-        soup = BeautifulSoup(response.body, 'lxml')
+        soup = BeautifulSoup(response.body, 'html5lib')
         div = soup.find_all(id='rentid_D10_01')
         span = div[0].find_all('span')
         span_text = span[0].text[1:-1]
