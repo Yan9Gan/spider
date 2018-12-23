@@ -1,5 +1,6 @@
 import re
 import pymongo
+from pyecharts import Bar
 
 
 class Analysis(object):
@@ -22,10 +23,27 @@ class Analysis(object):
             for item in cursor:
                 print(item)
 
+    def get_histogram(self):
+        region_list = []
+        count_list = []
+        for region in self.COLLECTIONS_LIST:
+            if len(region) > 2:
+                continue
+            collection = self.db[region]
+            cursor = collection.find()
+
+            region_list.append(region)
+            count_list.append(cursor.count())
+
+        bar = Bar('样本数量', '')
+        bar.use_theme('light')
+        bar.add('广州租房信息', region_list, count_list, is_more_utils=True)
+        bar.render('count.html')
+
 
 if __name__ == '__main__':
-    a = Analysis('ZuFang')
-    a.get_info()
+    zf = Analysis('ZuFang')
+    zf.get_histogram()
 
 
 
