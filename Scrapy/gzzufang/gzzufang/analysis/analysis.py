@@ -1,6 +1,5 @@
 import re
 import pymongo
-from pyecharts import Bar
 
 
 class Analysis(object):
@@ -24,11 +23,15 @@ class Analysis(object):
                 print(item)
 
     def get_histogram(self):
+        from pyecharts import Bar
+
         region_list = []
         count_list = []
+
         for region in self.COLLECTIONS_LIST:
             if len(region) > 2:
                 continue
+
             collection = self.db[region]
             cursor = collection.find()
 
@@ -40,10 +43,66 @@ class Analysis(object):
         bar.add('广州租房信息', region_list, count_list, is_more_utils=True)
         bar.render('count.html')
 
+    def statistics_average_price(self):
+        from pyecharts import Bar
+
+        region_list = []
+        average_price_list = []
+
+        for region in self.COLLECTIONS_LIST:
+            if len(region) > 2:
+                continue
+
+            region_list.append(region)
+            single_average_price_list = []
+
+            collection = self.db[region]
+            cursor = collection.find()
+            for item in cursor:
+                area = int(item.get('area'))
+                price = int(item.get('price'))
+
+                single_average_price = price / area
+                single_average_price_list.append(single_average_price)
+
+            average_price = sum(single_average_price_list) / len(single_average_price_list)
+            average_price_list.append(average_price)
+
+        bar = Bar('每平米价格', '')
+        bar.use_theme('light')
+        bar.add('广州租房信息', region_list, average_price_list, is_more_utils=True)
+        bar.render('average_price_histogram.html')
+
+    def statistics_areas(self):
+        from pyecharts import Pie
+
+        areas_round_list = ['0-30平方米', '30-60平方米', '60-90平方米', '90-120平方米',
+                            '120-180平方米', '180-300平方米', '300+平方米']
+        areas_count_list = [0] * 7
+
+        for region in self.COLLECTIONS_LIST:
+            if len(region) > 2:
+                continue
+
+            collection = self.db[region]
+            cursor = collection.find()
+            for item in cursor:
+                area = int(item.get('area'))
+                if area < 120:
+                    areas_count_list[area//30] += 1
+                elif area < 300:
+                    areas_count_list[area//60+2] += 1
+                else:
+                    areas_count_list[6] += 1
+
+        pie = Pie('租房面积统计')
+        pie.add('广州租房信息', areas_round_list, areas_count_list, is_label_show=True)
+        pie.render('areas_round.html')
+
 
 if __name__ == '__main__':
     zf = Analysis('ZuFang')
-    zf.get_histogram()
+    zf.statistics_areas()
 
 
 
