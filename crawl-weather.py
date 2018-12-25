@@ -9,7 +9,7 @@ import re
 from pandas import DataFrame
 
 # 爬取http://www.weather.com.cn/weather40d/101280101.shtml
-base_url = 'http://d1.weather.com.cn/calendar_new/2018/101280101_201812.html?'
+base_url = 'http://d1.weather.com.cn/calendar_new/2018/101280101_201812.templates?'
 headers = {
     'Accept': '*/*',
     'Accept-Encoding': 'gzip, deflate',

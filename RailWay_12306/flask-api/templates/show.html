@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>车票信息</title>
+</head>
+<body>
+<table border="1" style="text-align: center">
+    <tr><td colspan="17">{{ from_station }}-->{{ to_station }}&nbsp;&nbsp;{{ date }}</td></tr>
+    <tr>
+        <td>车次</td>
+        <td>出发站</td>
+        <td>到达站</td>
+        <td>出发时间</td>
+        <td>到达时间</td>
+        <td>历时</td>
+        <td>商务座/特等座</td>
+        <td>一等座</td>
+        <td>二等座</td>
+        <td>高级软卧</td>
+        <td>软卧</td>
+        <td>动卧</td>
+        <td>硬卧</td>
+        <td>软座</td>
+        <td>硬座</td>
+        <td>无座</td>
+        <td>其他</td>
+    </tr>
+    {% for item in items_list %}
+    <tr>
+        {% for i in item %}
+            <td>{{ i }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

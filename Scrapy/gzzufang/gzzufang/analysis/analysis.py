@@ -41,7 +41,7 @@ class Analysis(object):
         bar = Bar('样本数量', '')
         bar.use_theme('light')
         bar.add('广州租房信息', region_list, count_list, is_more_utils=True)
-        bar.render('count.html')
+        bar.render('count.templates')
 
     def statistics_average_price(self):
         from pyecharts import Bar
@@ -71,7 +71,7 @@ class Analysis(object):
         bar = Bar('每平米价格', '')
         bar.use_theme('light')
         bar.add('广州租房信息', region_list, average_price_list, is_more_utils=True)
-        bar.render('average_price_histogram.html')
+        bar.render('average_price_histogram.templates')
 
     def statistics_areas(self):
         from pyecharts import Pie
@@ -97,7 +97,7 @@ class Analysis(object):
 
         pie = Pie('租房面积统计')
         pie.add('广州租房信息', areas_round_list, areas_count_list, is_label_show=True)
-        pie.render('areas_round.html')
+        pie.render('areas_round.templates')
 
 
 if __name__ == '__main__':
