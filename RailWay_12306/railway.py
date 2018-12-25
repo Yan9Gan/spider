@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask_wtf import CsrfProtect
-from RailWay_12306 import railway_query as rq
+from spider import railway_query as rq
 
 app = Flask(__name__)
 

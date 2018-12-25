@@ -22,7 +22,7 @@ class RailWayQuery(object):
     json_compile = re.compile('(\'.*\')')
     gd_compile = re.compile('G|D\d+')
 
-    with open('D:/Yang/spider/RailWay_12306/station_code.json', 'r', encoding='utf-8') as f:
+    with open('/home/ghosque/crawl/RailWay_12306/spider/station_code.json', 'r', encoding='utf-8') as f:
         station_code_dict = json.load(f)
 
     def __init__(self, START, END, DATE):
