@@ -1,15 +1,18 @@
+import os
 import re
 import json
 import requests
 from urllib.parse import urlencode
 import prettytable as pt
 
+current_path = os.path.dirname(__file__)
+
 
 class RailWayQuery(object):
 
-    base_url = 'https://kyfw.12306.cn/otn/leftTicket/queryX?'
+    base_url = 'https://kyfw.12306.cn/otn/leftTicket/queryA?'
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36',
     }
 
     params = {
@@ -22,7 +25,7 @@ class RailWayQuery(object):
     json_compile = re.compile('(\'.*\')')
     gd_compile = re.compile('G|D\d+')
 
-    with open('/home/ghosque/crawl/RailWay_12306/spider/station_code.json', 'r', encoding='utf-8') as f:
+    with open(os.path.join(current_path, 'station_code.json'), 'r', encoding='utf-8') as f:
         station_code_dict = json.load(f)
 
     def __init__(self, START, END, DATE):
@@ -53,7 +56,7 @@ class RailWayQuery(object):
         tb = pt.PrettyTable(['车次', '出发站', '到达站', '出发时间', '到达时间', '历时',
                              '商务座/特等座', '一等座', '二等座', '高级软卧', '软卧', '动卧',
                              '硬卧', '软座', '硬座', '无座', '其他'])
-
+        print(json)
         data = json['data']
         station_code_dict = data['map']
         ticket_info_list = data['result']
@@ -128,6 +131,5 @@ if __name__ == '__main__':
     print(table, items_list)
 
     # RWQ.get_city_code()
-
 
 

@@ -41,9 +41,9 @@ attr, value = geo.cast(data)
 # geo.add('', attr, value, visual_range=[0, 200], visual_text_color='#fff',
 #         symbol_size=15, is_visualmap=True)
 # geo.add('', attr, value, type='effectScatter', is_random=True, effect_scale=5)
-# geo.render('geo.html')
+# geo.render('geo.templates')
 
 geo.add('', attr, value, type='heatmap', visual_range=[0, 300],
         visual_text_color='#fff', is_visualmap=True)
-geo.render('geo2.html')
+geo.render('geo2.templates')
 

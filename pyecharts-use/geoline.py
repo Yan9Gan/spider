@@ -17,7 +17,7 @@ data_guangzhou = [
 ]
 geolines = GeoLines('GeoLines 示例', **style.init_style)
 geolines.add('从广州出发', data_guangzhou, **style_geo)
-geolines.render('geolines.html')
+geolines.render('geolines.templates')
 
 
 

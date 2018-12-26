@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 
 
 html = """
-<html><head><title>The Dormouse's story</title></head>
+<templates><head><title>The Dormouse's story</title></head>
 <body>
 <p class="title" name="dromouse"><b>The Dormouse's story</b></p>
 <p class="story">Once upon a time there were three little sisters;and their names were

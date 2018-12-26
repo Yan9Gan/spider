@@ -63,8 +63,8 @@ from urllib.error import URLError
 #
 # try:
 #     result = opener.open(url)
-#     html = result.read().decode('utf-8')
-#     print(html)
+#     templates = result.read().decode('utf-8')
+#     print(templates)
 # except URLError as e:
 #     print(e.reason)
 
@@ -78,8 +78,8 @@ from urllib.request import ProxyHandler
 # opener = build_opener(proxy_handler)
 # try:
 #     result = opener.open('https://www.baidu.com')
-#     html = result.read().decode('utf-8')
-#     print(html)
+#     templates = result.read().decode('utf-8')
+#     print(templates)
 # except URLError as e:
 #     print(e.reason)
 
@@ -138,7 +138,7 @@ from urllib.parse import urlparse
 
 from urllib.parse import urlunparse
 
-# images = ['http', 'www.baidu.com', 'index.html', 'user', 'a=6', 'comment']
+# images = ['http', 'www.baidu.com', 'index.templates', 'user', 'a=6', 'comment']
 # print(urlunparse(images))
 
 
@@ -150,16 +150,16 @@ from urllib.parse import urlsplit
 
 from urllib.parse import urlunsplit
 
-# images = ['http', 'www.baidu.com', 'index.html', 'a=6', 'comment']
+# images = ['http', 'www.baidu.com', 'index.templates', 'a=6', 'comment']
 # print(urlunsplit(images))
 
 
 from urllib.parse import urljoin
 
-print(urljoin('http://www.baidu.com', 'FAQ.html'))
-print(urljoin('http://www.baidu.com', 'https://cuiqingcai.com/FAQ.html'))
-print(urljoin('http://www.baidu.com/about.html', 'https://cuiqingcai.com/FAQ.html'))
-print(urljoin('http://www.baidu.com/about.html', 'https://cuiqingcai.com/FAQ.html?question=2'))
+print(urljoin('http://www.baidu.com', 'FAQ.templates'))
+print(urljoin('http://www.baidu.com', 'https://cuiqingcai.com/FAQ.templates'))
+print(urljoin('http://www.baidu.com/about.templates', 'https://cuiqingcai.com/FAQ.templates'))
+print(urljoin('http://www.baidu.com/about.templates', 'https://cuiqingcai.com/FAQ.templates?question=2'))
 print(urljoin(' http://www.baidu.com?wd=abc', 'https://cuiqingcai.com/index.php'))
 print(urljoin('http://www.baidu.com', '?category=2#comment'))
 print(urljoin('www.baidu.com', '?category=2#comment'))

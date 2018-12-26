@@ -11,7 +11,7 @@ value = [
     965, 847, 582, 555, 550, 462, 366, 360, 282, 273, 265]
 wordcloud = WordCloud(width=1300, height=620)
 wordcloud.add('', name, value, word_size_range=[20, 100])
-wordcloud.render('wordcloud.html')
+wordcloud.render('wordcloud.templates')
 
 
 

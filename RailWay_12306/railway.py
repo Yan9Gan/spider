@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask_wtf import CsrfProtect
-from spider import railway_query as rq
+from RailWay_12306.spider import railway_query as rq
 
 app = Flask(__name__)
 
@@ -28,6 +28,6 @@ def show_data():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
 
 
