@@ -56,7 +56,6 @@ class RailWayQuery(object):
         tb = pt.PrettyTable(['车次', '出发站', '到达站', '出发时间', '到达时间', '历时',
                              '商务座/特等座', '一等座', '二等座', '高级软卧', '软卧', '动卧',
                              '硬卧', '软座', '硬座', '无座', '其他'])
-        print(json)
         data = json['data']
         station_code_dict = data['map']
         ticket_info_list = data['result']
