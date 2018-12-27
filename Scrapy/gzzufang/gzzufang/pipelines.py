@@ -36,9 +36,9 @@ class MongoPipeline():
 
     def process_item(self, item, spider):
         self.collection = item['region']
-        if item['region'] == '不限':
-            item['region'] = '未注明区域'
-        self.db[self.collection].insert(dict(item))
+        if item['region'] in ['天河', '番禺', '海珠', '白云', '越秀', '花都',
+                              '增城', '荔湾', '黄埔', '南沙', '从化']:
+            self.db[self.collection].insert(dict(item))
 
         return item
 
