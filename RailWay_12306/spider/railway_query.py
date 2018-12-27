@@ -88,7 +88,7 @@ class RailWayQuery(object):
                 dw = '-'
                 wz = items[26] or '-'
                 yw = items[28] or '-'
-                rz = '-'
+                rz = items[24] or '-'
                 yz = items[29] or '-'
                 qt = '-'
             item = [train_number, start_station, end_station, start_time, end_time,
