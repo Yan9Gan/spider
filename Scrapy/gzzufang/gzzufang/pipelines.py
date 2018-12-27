@@ -37,7 +37,7 @@ class MongoPipeline():
     def process_item(self, item, spider):
         self.collection = item['region']
         if item['region'] == '不限':
-            item['region'] = item['address'][0:2]
+            item['region'] = '未注明区域'
         self.db[self.collection].insert(dict(item))
 
         return item
