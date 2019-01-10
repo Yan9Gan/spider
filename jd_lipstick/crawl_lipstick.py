@@ -4,9 +4,13 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import time
 import re
-import json
 from multiprocessing import Pool
+from pymongo import MongoClient
 
+
+client = MongoClient()
+db = client['jd']
+collection = db['lipstick']
 
 base_url = 'https://search.jd.com/search?'
 params = {
@@ -22,7 +26,6 @@ headers = {
 }
 url_compile = re.compile('(.*?)(stock=1&)(ev=.*?&).*?')
 all_brand_page_url_list = []
-all_url_list = []
 
 # browser = webdriver.PhantomJS(executable_path=r'D:\phantomjs-2.1.1-windows\bin\phantomjs.exe',
 #                               service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])
@@ -99,8 +102,11 @@ def get_per_page_url(brand_url):
                     url = li.find_element_by_xpath('./div/div[1]/a').get_attribute('href')
                     # 去除广告url
                     if url.startswith('https://item'):
+                        item = {}
                         print(url)
-                        all_url_list.append(url)
+                        item['url'] = url
+                        if collection.insert(item):
+                            print('ok')
                 except:
                     continue
         finally:
@@ -118,15 +124,10 @@ def main():
     # for brand_url in all_brand_page_url_list:
     #     get_per_page_url(brand_url)
 
-    pool = Pool(processes=2)
+    pool = Pool()
     pool.map(get_per_page_url, all_brand_page_url_list)
     pool.close()
     pool.join()
-
-    all_url_dict = {'urls': all_url_list}
-    with open('urls.json', 'w') as f:
-        f.write(json.dumps(all_url_dict))
-        print("成功写入json文件")
 
 
 if __name__ == '__main__':
