@@ -24,8 +24,8 @@ url_compile = re.compile('(.*?)(stock=1&)(ev=.*?&).*?')
 all_brand_page_url_list = []
 all_url_list = []
 
-browser = webdriver.PhantomJS(executable_path=r'D:\phantomjs-2.1.1-windows\bin\phantomjs.exe',
-                              service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])
+# browser = webdriver.PhantomJS(executable_path=r'D:\phantomjs-2.1.1-windows\bin\phantomjs.exe',
+#                               service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])
 
 
 # 获取口红首页
@@ -74,25 +74,32 @@ def get_all_brand_page_url(brand_url):
 
 # 获取每个商品页面url
 def get_per_page_url(brand_url):
-    # browser = webdriver.Chrome()
-    browser.get(brand_url)
-    # 下拉至底部，下拉后等待2秒，防止页面还没加载全导致页面html没有刷新
-    js = "window.scrollTo(0, document.body.scrollHeight)"
-    browser.execute_script(js)
-    time.sleep(2)
-    # 查找每个商店页面的li
-    lis = browser.find_elements_by_xpath('//*[@id="J_goodsList"]/ul/li')
-    for li in lis:
-        try:
-            url = li.find_element_by_xpath('./div/div[1]/a').get_attribute('href')
-            # 去除广告url
-            if url.startswith('https://item'):
-                print(url)
-                all_url_list.append(url)
-        except:
-            continue
+    try:
+        browser = webdriver.Chrome()
+        browser.get(brand_url)
 
-    # browser.close()
+    except:
+        print('error')
+
+    else:
+        # 下拉至底部，下拉后等待2秒，防止页面还没加载全导致页面html没有刷新
+        js = "window.scrollTo(0, document.body.scrollHeight)"
+        browser.execute_script(js)
+        time.sleep(2)
+        # 查找每个商店页面的li
+        lis = browser.find_elements_by_xpath('//*[@id="J_goodsList"]/ul/li')
+        for li in lis:
+            try:
+                url = li.find_element_by_xpath('./div/div[1]/a').get_attribute('href')
+                # 去除广告url
+                if url.startswith('https://item'):
+                    print(url)
+                    all_url_list.append(url)
+            except:
+                continue
+
+    finally:
+        browser.close()
 
 
 def main():
@@ -106,7 +113,7 @@ def main():
     # for brand_url in all_brand_page_url_list:
     #     get_per_page_url(brand_url)
 
-    pool = Pool(processes=3)
+    pool = Pool()
     pool.map(get_per_page_url, all_brand_page_url_list)
     pool.close()
     pool.join()
