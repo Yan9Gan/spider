@@ -8,10 +8,6 @@ from multiprocessing import Pool
 from pymongo import MongoClient
 
 
-client = MongoClient()
-db = client['jd']
-collection = db['lipstick']
-
 base_url = 'https://search.jd.com/search?'
 params = {
     'keyword': '口红',
@@ -27,8 +23,29 @@ headers = {
 url_compile = re.compile('(.*?)(stock=1&)(ev=.*?&).*?')
 all_brand_page_url_list = []
 
-# browser = webdriver.PhantomJS(executable_path=r'D:\phantomjs-2.1.1-windows\bin\phantomjs.exe',
-#                               service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])
+client = MongoClient()
+db = client['jd']
+collection = db['lipstick']
+
+
+def get_url():
+    """主函数"""
+    html = get_first_page()
+    brand_url_list = get_brand_url(html)
+
+    for brand_url in brand_url_list:
+        print(brand_url)
+        get_all_brand_page_url(brand_url)
+
+    # for brand_url in all_brand_page_url_list:
+    #     get_per_page_url(brand_url)
+
+    pool = Pool(processes=2)
+    pool.map(get_per_page_url, all_brand_page_url_list)
+    pool.close()
+    pool.join()
+
+# ----------------------------------分割线----------------------------------
 
 
 # 获取口红首页
@@ -105,33 +122,16 @@ def get_per_page_url(brand_url):
                         item = {}
                         print(url)
                         item['url'] = url
-                        if collection.insert(item):
-                            print('ok')
+                        # if collection.insert(item):
+                        #     print('ok')
                 except:
                     continue
         finally:
             browser.close()
 
 
-def main():
-    html = get_first_page()
-    brand_url_list = get_brand_url(html)
-
-    for brand_url in brand_url_list:
-        print(brand_url)
-        get_all_brand_page_url(brand_url)
-
-    # for brand_url in all_brand_page_url_list:
-    #     get_per_page_url(brand_url)
-
-    pool = Pool()
-    pool.map(get_per_page_url, all_brand_page_url_list)
-    pool.close()
-    pool.join()
-
-
 if __name__ == '__main__':
-    main()
+    get_url()
 
 
 
