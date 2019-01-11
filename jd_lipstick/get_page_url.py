@@ -122,8 +122,8 @@ def get_per_page_url(brand_url):
                         item = {}
                         print(url)
                         item['url'] = url
-                        # if collection.insert(item):
-                        #     print('ok')
+                        if collection.insert(item):
+                            print('ok')
                 except:
                     continue
         finally:
