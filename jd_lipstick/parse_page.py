@@ -3,11 +3,10 @@ from pymongo import MongoClient
 
 
 client = MongoClient()
-db = client['jd']
-collection = db['lipstick']
+db = client['jdLipstick']
+collections_name = db.list_collection_names()
 
-browser = webdriver.PhantomJS(executable_path=r'D:\phantomjs-2.1.1-windows\bin\phantomjs.exe',
-                              service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])
+browser = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])
 
 
 def parse_page(url):
@@ -26,7 +25,11 @@ def parse_page(url):
 
 
 if __name__ == '__main__':
-    for x in collection.find():
-        parse_page(x.get('url'))
+    for collection_name in collections_name:
+        collection = db[collection_name]
+        for data in collection.find():
+            url = data.get('url')
+            parse_page(url)
+
 
 

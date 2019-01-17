@@ -77,16 +77,19 @@ def get_first_page():
 # 获取每个品牌页面url
 def get_brand_url(html):
     if html:
-        brand_url_list = []
+        # 定义BeautifulSoup对象
         soup = BeautifulSoup(html, 'html5lib')
+        # 查找品牌所在的li并遍历提取url和品牌名
         brand_lis = soup.select('#J_selector > div.J_selectorLine.s-brand > div > div.sl-value > div.sl-v-logos > ul > li')
         for brand_li in brand_lis:
             brand_url = brand_li.find('a').get('href')
             brand_url = base_url + brand_url[7:]
             brand_name = brand_li.find('a').get('title')
-
+            # 判断品牌名是否存在括号
             has_brackets = re.search(brackets_compile, brand_name)
             brand_name = brand_name.replace('（', '_').replace('）', '').replace(' ', '')
+            # 判断是否存在相同品牌的url，相同则比较url是否相同，不同则加入同一个列表中
+            # 有括号的提取括号里的英文小写进行比较，没有括号的直接比较
             is_same = False
             if has_brackets:
                 compare_name = has_brackets.group(1)
@@ -123,11 +126,14 @@ def get_all_brand_page_url(brand_name, brand_url):
         if brand_name not in all_brand_page_url_dict.keys():
             all_brand_page_url_dict[brand_name] = []
         html = response.text
+        # 定义BeautifulSoup对象
         soup = BeautifulSoup(html, 'html5lib')
+        # 找到该url的总页数
         pages = soup.select('#J_topPage > span > i')[0].get_text()
         brand_url_tuple = re.findall(url_compile, brand_url)[0]
         # 重构url，将品牌名和stock交换位置，后面再补上固定数据，page处用{}占位
         brand_url = brand_url_tuple[0] + brand_url_tuple[2] + brand_url_tuple[1] + 'page={}&s=1&click=0'
+        # 定义所有url
         for page in range(int(pages)):
             url = brand_url.format(int(page)+2)
             all_brand_page_url_dict[brand_name].append(url)
