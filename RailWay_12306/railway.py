@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask_wtf import CsrfProtect
-from RailWay_12306.spider import railway_query as rq
+from spider import spider as rq
 
 app = Flask(__name__)
 
@@ -20,14 +20,13 @@ def show_data():
     date = request.form['date']
 
     RWQ = rq.RailWayQuery(from_station, to_station, date)
-    json = RWQ.get_json()
-    table, items_list = RWQ.parse_json(json)
+    head_list, items_list = RWQ.spider()
 
-    return render_template('show.html', items_list=items_list, from_station=from_station,
+    return render_template('show.html', head_list=head_list, items_list=items_list, from_station=from_station,
                            to_station=to_station, date=date)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run('0.0.0.0', port=2450)
 
 

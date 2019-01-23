@@ -12,7 +12,11 @@ class RailWayQuery(object):
 
     base_url = 'https://kyfw.12306.cn/otn/leftTicket/queryA?'
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0',
+        'Cookie': 'JSESSIONID=B9FFED936A77CD0CAECC897B5A88D700; _jc_save_wfdc_flag=dc; _jc_save_fromStation=%u6F6E%u6C55%2CCBQ; _jc_save_toStation=%u5E7F%u5DDE%2CGZQ; BIGipServerportal=2949906698.17183.0000; BIGipServerotn=1691943178.64545.0000; RAIL_EXPIRATION=1548496240161; RAIL_DEVICEID=cjWczPgn8Hj0jMnTVhQGNQBWH9Tnzh5JA1L0nyIdyF9C-teL-YFzzooddGwewDt9DSdC17mYOyd8XnQgUnx6DQNonyilj7M_EBhYmQhU1DnkMT4fT89FjIL2e22FKiJ7motbQwwKUvHGtdJyLTxo5jnRuXVmOYS6; BIGipServerpassport=887619850.50215.0000; route=6f50b51faa11b987e576cdb301e545c4; _jc_save_fromDate=2019-01-30; _jc_save_toDate=2019-01-23',
+        'Host': 'kyfw.12306.cn',
+        'Referer': 'https://www.12306.cn/index/',
+        'Connection': 'keep-alive',
     }
 
     params = {
@@ -43,7 +47,8 @@ class RailWayQuery(object):
         print(url)
 
         try:
-            response = requests.get(url, headers=self.headers)
+            response = requests.get(url, headers=self.headers, allow_redirects=False)
+            print(response.status_code)
             if response.status_code == 200:
                 return response.json()
             return None
