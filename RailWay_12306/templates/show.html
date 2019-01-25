@@ -6,7 +6,7 @@
 </head>
 <body>
 <table border="1" style="text-align: center">
-    <tr><td colspan="17">{{ from_station }}-->{{ to_station }}&nbsp;&nbsp;{{ date }}</td></tr>
+    <tr><td colspan="{{ colspan }}">{{ from_station }}-->{{ to_station }}&nbsp;&nbsp;{{ date }}</td></tr>
     <tr>
         {% for head in head_list %}
         <td>{{ head }}</td>

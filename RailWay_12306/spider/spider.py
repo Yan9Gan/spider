@@ -26,7 +26,8 @@ class RailWayQuery(object):
         }
 
         self.json_compile = re.compile('(\'.*\')')
-        self.gd_compile = re.compile('G|D\d+')
+        self.times_compile = re.compile('(\d{2}:\d{2})(\d{2}:\d{2})')
+
         with open(os.path.join(current_path, 'station_code.json'), 'r', encoding='utf-8') as f:
             self.station_code_dict = json.load(f)
         self.head_list = []
@@ -41,71 +42,72 @@ class RailWayQuery(object):
         print(url)
         try:
             browser.get(url)
-            time.sleep(1)
 
         except:
             pass
 
         else:
             print(browser.current_url)
-            head_list = browser.find_elements_by_xpath('//*[@id="float"]/th')
-            for head in head_list:
-                if head.text == '备注':
-                    continue
-                if '\n' in head.text:
-                    if '一等卧' in head.text or '二等卧' in head.text or '商务座' in head.text:
-                        text = head.text.replace('\n', '/')
-                        self.head_list.append(text)
-                    elif '高级' in head.text and '软卧' in head.text:
-                        text = head.text.replace('\n', '')
-                        self.head_list.append(text)
-                    else:
-                        temp_list = head.text.split('\n')
-                        for i in range(len(temp_list)):
-                            self.head_list.append(temp_list[i])
-                else:
-                    self.head_list.append(head.text)
+            head_list = ['车次', '出发站', '到达站', '出发时间', '到达时间', '历时', '商务座/特等座',
+                         '一等座', '二等座', '高级软卧', '软卧/一等卧', '动卧', '硬卧/二等卧', '软座',
+                         '硬座', '无座', '其他', '备注']
 
             items_list = []
             content_list = browser.find_elements_by_xpath('//*[@id="queryLeftTable"]/tr[@class]')
             for row in content_list:
                 items = []
                 # 车次
-                train_num = row.find_element_by_xpath('./td[1]/div/div[1]/div/a').text
+                train_num = row.find_element_by_xpath('./td[1]/div/div[1]/div/a').get_attribute('innerText')
                 # 始发站、终点站
-                stations = row.find_element_by_xpath('./td[1]/div/div[2]').text
-                fs, ts = stations.split('\n')
-                # 出发时间，到达时间
-                times = row.find_element_by_xpath('./td[1]/div/div[3]').text
-                ft, tt = times.split('\n')
-                # 历时
-                duration = row.find_element_by_xpath('./td[1]/div/div[4]').text
-                duration = duration.replace('\n', '-')
-                # 商务座
-                swz = row.find_element_by_xpath('./td[2]').text
-                # 一等座
-                ydz = row.find_element_by_xpath('./td[3]').text
-                # 二等座
-                edz = row.find_element_by_xpath('./td[4]').text
-                # 高级软卧
-                gjrw = row.find_element_by_xpath('./td[5]').text
-                # 软卧/一等卧
-                rw = row.find_element_by_xpath('./td[6]').text
-                # 动卧
-                dw = row.find_element_by_xpath('./td[7]').text
-                # 硬卧/二等卧
-                yw = row.find_element_by_xpath('./td[8]').text
-                # 软座
-                rz = row.find_element_by_xpath('./td[9]').text
-                # 硬座
-                yz = row.find_element_by_xpath('./td[10]').text
-                # 无座
-                wz = row.find_element_by_xpath('./td[11]').text
-                # 其他
-                qt = row.find_element_by_xpath('./td[12]').text
+                stations = row.find_element_by_xpath('./td[1]/div/div[2]').get_attribute('innerText')
+                print(stations)
+                fs, ts, _ = stations.split('\n')
+                # 备注
+                bz = row.find_element_by_xpath('./td[13]')
+                if bz.text == '预订':
+                    try:
+                        bz.find_element_by_tag_name('a')
+                        bz = '可' + bz.get_attribute('innerText')
+                    except:
+                        bz = '不可' + bz.get_attribute('innerText')
+                else:
+                    bz = bz.get_attribute('innerText')
+                if bz == '列车停运':
+                    ft = tt = duration = swz = ydz = edz = gjrw = rw =\
+                        dw = yw = rz = yz = wz = qt = '--'
+                else:
+                    # 出发时间，到达时间
+                    times = row.find_element_by_xpath('./td[1]/div/div[3]').get_attribute('innerText')
+                    ft, tt = re.findall(self.times_compile, times)[0]
+                    # 历时
+                    duration = row.find_element_by_xpath('./td[1]/div/div[4]').get_attribute('innerText')
+                    duration = duration.replace('\n', '-')
+                    # 商务座
+                    swz = row.find_element_by_xpath('./td[2]').get_attribute('innerText')
+                    # 一等座
+                    ydz = row.find_element_by_xpath('./td[3]').get_attribute('innerText')
+                    # 二等座
+                    edz = row.find_element_by_xpath('./td[4]').get_attribute('innerText')
+                    # 高级软卧
+                    gjrw = row.find_element_by_xpath('./td[5]').get_attribute('innerText')
+                    # 软卧/一等卧
+                    rw = row.find_element_by_xpath('./td[6]').get_attribute('innerText')
+                    # 动卧
+                    dw = row.find_element_by_xpath('./td[7]').get_attribute('innerText')
+                    # 硬卧/二等卧
+                    yw = row.find_element_by_xpath('./td[8]').get_attribute('innerText')
+                    # 软座
+                    rz = row.find_element_by_xpath('./td[9]').get_attribute('innerText')
+                    # 硬座
+                    yz = row.find_element_by_xpath('./td[10]').get_attribute('innerText')
+                    # 无座
+                    wz = row.find_element_by_xpath('./td[11]').get_attribute('innerText')
+                    # 其他
+                    qt = row.find_element_by_xpath('./td[12]').get_attribute('innerText')
 
                 items = [train_num, fs, ts, ft, tt, duration, swz, ydz,
-                         edz, gjrw, rw, dw, yw, rz, yz, wz, qt]
+                         edz, gjrw, rw, dw, yw, rz, yz, wz, qt, bz]
+                print(items)
                 items_list.append(items)
 
             return head_list, items_list
