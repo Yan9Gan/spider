@@ -32,8 +32,8 @@ class Analysis(object):
     def area_range(self):
         area_head_list = ['0-25平方米', '25-50平方米', '50-70平方米', '70-100平方米',
                           '100-140平方米', '140-200平方米', '200+平方米']
-        range_list = [range(0, 25), range(25, 50), range(50, 70), range(70, 100),
-                      range(100, 140), range(140, 200)]
+        range_list = [range(0, 25), range(25, 50), range(50, 70),
+                      range(70, 100), range(100, 140), range(140, 200)]
         area_list = [0] * len(area_head_list)
         for collection_name in self.collection_name_list:
             for info in self.db[collection_name].find():

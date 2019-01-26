@@ -34,6 +34,7 @@ db = client['lianjia_zufang']
 
 
 def main():
+    # 通过改变city可更换爬取城市
     city = '广州'
     get_city_code()
     get_region_url(city)
@@ -45,6 +46,12 @@ def main():
 
 
 def parse_per_page_url(region, url):
+    """
+    解析每一页url
+    :param region: 区
+    :param url: 单页url
+    :return: 无返回
+    """
     collection = db[region]
     browser.get(url)
     print(url)
@@ -99,6 +106,10 @@ def parse_per_page_url(region, url):
 
 
 def get_per_page_url():
+    """
+    获取每一页的url
+    :return: 无返回
+    """
     for region, url in region_url_dict.items():
         region_per_page_url_dict[region] = []
         browser.get(url)
@@ -112,6 +123,11 @@ def get_per_page_url():
 
 
 def get_region_url(city):
+    """
+    获取各区第一页的url
+    :param city: 城市名
+    :return: 无返回，报错则返回None
+    """
     code = city_code_dict.get(city, None)
     if not code:
         print('暂无此城市的租房信息')
@@ -132,6 +148,10 @@ def get_region_url(city):
 
 
 def get_city_code():
+    """
+    获取城市代号，用于生成url
+    :return: 无返回
+    """
     response = requests.get(city_code_url, headers=headers)
     if response.status_code == 200:
         html = response.text
@@ -147,9 +167,6 @@ def get_city_code():
 
 if __name__ == '__main__':
     main()
-
-
-
 
 
 
