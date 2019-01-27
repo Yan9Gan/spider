@@ -1,60 +1,85 @@
 import re
+from functools import partial
 from selenium import webdriver
 from pymongo import MongoClient
+from multiprocessing import Pool
 
 
 client = MongoClient()
-db = client['jdLipstick']
-collections_name = db.list_collection_names()
+db1 = client['jdLipstick']
+collections_name_list1 = db1.list_collection_names()
+
+db2 = client['jdLipstickData']
 
 # browser = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])
+data_head = ['商品毛重', '国产/进口', '妆效', '色系', '产品产地']
 
 
-def parse_page(url):
-    browser = webdriver.Chrome()
+def parse_page():
+    for collection_name in collections_name_list1:
+        collection = db1[collection_name]
+        # for data in collection.find():
+        #     parse_one_page(data, collection_name)
+
+        pool = Pool(processes=8)
+        pool.map(partial(parse_one_page, collection_name=collection_name), collection.find())
+        pool.close()
+        pool.join()
+
+
+def parse_one_page(data, collection_name):
+    url = data.get('url')
     try:
-        browser.get(url)
+        browser = webdriver.Chrome()
 
     except:
-        print('打开' + url + '失败')
+        print('打开chrome失败')
 
     else:
-        print(url)
-        infos_div = browser.find_element_by_class_name('itemInfo-wrap')
-        # 标题
-        title = infos_div.find_element_by_class_name('sku-name').get_attribute('innerText')
-        # 价格
-        price = infos_div.find_element_by_class_name('p-price').get_attribute('innerText')
-        print(title)
-        good_introduces = browser.find_element_by_class_name('parameter2')
-        # 商品毛重
-        gross_weight = good_introduces.find_element_by_xpath('./li[4]').text.split('：')[1]
-        # 妆效
-        makeup_effect = good_introduces.find_element_by_xpath('./li[5]').text.split('：')[1]
-        # 色系
-        color_system = good_introduces.find_element_by_xpath('./li[7]').text.split('：')[1]
-        # 产地
-        origin = good_introduces.find_element_by_xpath('./li[8]').text.split('：')[1]
-        print('价格：', price)
-        print('商品毛重：', gross_weight)
-        print('妆效：', makeup_effect)
-        print('色系：', color_system)
-        print('产地：', origin)
+        try:
+            browser.get(url)
 
-    finally:
-        browser.close()
+        except:
+            print('打开' + url + '失败')
+
+        else:
+            print(url)
+            item = {}
+            item['url'] = url
+            try:
+                infos_div = browser.find_element_by_class_name('itemInfo-wrap')
+
+            except:
+                print('该页面没有商品信息')
+
+            else:
+                # 价格
+                price = infos_div.find_element_by_class_name('p-price').get_attribute('innerText')
+                item['价格'] = price
+                try:
+                    color_num = browser.find_element_by_xpath(
+                        '//*[@id="choose-attr-1"]/div[2]/div[@class="item  selected"]'
+                    ).text
+                    item['色号'] = color_num
+                except:
+                    item['色号'] = None
+                good_introduces = browser.find_element_by_class_name('parameter2')
+                for li in good_introduces.find_elements_by_tag_name('li'):
+                    if li.text.split('：')[0] in data_head:
+                        head = li.text.split('：')[0]
+                        data = li.text.split('：')[1]
+                        item[head] = data
+                collection = db2[collection_name]
+                print(item)
+                if item and collection.insert_one(item):
+                    print('ok')
+
+        finally:
+            browser.close()
 
 
 if __name__ == '__main__':
-    sum = 0
-    for collection_name in collections_name:
-        collection = db[collection_name]
-        print(collection_name, ':', collection.count())
-        sum += collection.count()
-        for data in collection.find():
-            url = data.get('url')
-            parse_page(url)
-    print(sum)
+    parse_page()
 
 
 
