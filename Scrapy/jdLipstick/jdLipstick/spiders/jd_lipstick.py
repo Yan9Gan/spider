@@ -66,8 +66,12 @@ class JdLipstickSpider(scrapy.Spider):
         soup = BeautifulSoup(response.body, 'html5lib')
         lis = soup.select('#J_goodsList > ul > li')
         for li in lis:
-            url = 'https:' + li.find('a').get('href')
-            self.all_url_list.append(url)
+            commodity_url = li.find('a').get('href')
+            if commodity_url.startswith('//item'):
+                url = 'https:' + commodity_url
+                self.all_url_list.append(url)
+            else:
+                continue
 
         if len(self.all_page_url_list) != 0:
             self.current_url = self.all_page_url_list.pop(0)
