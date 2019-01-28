@@ -11,4 +11,12 @@ import scrapy
 class JdlipstickItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+
+    brand = scrapy.Field()
+    price = scrapy.Field()
+    commodity_name = scrapy.Field()
+    weight = scrapy.Field()
+    channel = scrapy.Field()
+    makeup_effect = scrapy.Field()
+    color_type = scrapy.Field()
+    origin = scrapy.Field()

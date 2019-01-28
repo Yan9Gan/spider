@@ -3,6 +3,7 @@ import re
 import scrapy
 from bs4 import BeautifulSoup
 from scrapy.http import Request
+from jdLipstick.items import JdlipstickItem
 
 
 class JdLipstickSpider(scrapy.Spider):
@@ -18,6 +19,17 @@ class JdLipstickSpider(scrapy.Spider):
     brand_url_list = []
     all_page_url_list = []
     all_url_list = []
+    all_price_list = []
+
+    head_list = ['商品名称', '商品毛重', '国产/进口', '妆效', '色系', '产品产地']
+    head_english_dict = {'商品名称': 'commodity_name',
+                         '商品毛重': 'weight',
+                         '国产/进口': 'channel',
+                         '妆效': 'makeup_effect',
+                         '色系': 'color_type',
+                         '产品产地': 'origin'}
+
+    colon_split = '：'  # 中文冒号
 
     url_split_compile = re.compile('(.*?)(&stock.*?)(&ev.*?)&uc.*?')
 
@@ -49,17 +61,15 @@ class JdLipstickSpider(scrapy.Spider):
         base_url = current_url_split[0] + current_url_split[2] + current_url_split[1] + self.page_url
 
         soup = BeautifulSoup(response.body, 'html5lib')
+        # 找到总页数
         pages_num = soup.select('#J_topPage > span > i')[0].text
+        # 通过循环枚举所有页码的url
         for i in range(int(pages_num)):
             url = base_url.format(i+2)
             self.all_page_url_list.append(url)
 
-        if len(self.brand_url_list) != 0:
-            self.current_url = self.brand_url_list.pop(0)
-            yield Request(self.current_url, callback=self.per_page_url_callback, dont_filter=True)
-        else:
-            self.current_url = self.all_page_url_list.pop(0)
-            yield Request(self.current_url, callback=self.per_commodity_url_callback, dont_filter=True)
+        self.current_url = self.all_page_url_list.pop(0)
+        yield Request(self.current_url, callback=self.per_commodity_url_callback, dont_filter=True)
 
     # 获取每个商品页的url
     def per_commodity_url_callback(self, response):
@@ -67,9 +77,13 @@ class JdLipstickSpider(scrapy.Spider):
         lis = soup.select('#J_goodsList > ul > li')
         for li in lis:
             commodity_url = li.find('a').get('href')
-            if commodity_url.startswith('//item'):
+            # 除去广告url
+            if commodity_url.startswith('//item.jd.com'):
                 url = 'https:' + commodity_url
                 self.all_url_list.append(url)
+                # 找到价格节点
+                price = li.select('div > div.p-price > strong')[0].text
+                self.all_price_list.append(price)
             else:
                 continue
 
@@ -77,14 +91,42 @@ class JdLipstickSpider(scrapy.Spider):
             self.current_url = self.all_page_url_list.pop(0)
             yield Request(self.current_url, callback=self.per_commodity_url_callback, dont_filter=True)
         else:
+            self.current_price = self.all_price_list.pop(0)
             self.current_url = self.all_url_list.pop(0)
             yield Request(self.current_url, callback=self.parse, dont_filter=True)
 
     # 解析每个商品页
     def parse(self, response):
+        items = JdlipstickItem()
+        soup = BeautifulSoup(response.body, 'html5lib')
+
+        try:
+            brand_name = soup.select('#parameter-brand > li')[0].text.strip().replace(' ', '')
+            content = brand_name.split(self.colon_split)[1]
+        except:
+            content = '未知'
+        items['brand'] = content
+        items['price'] = self.current_price
+
+        infos = soup.select(
+            '#detail > div.tab-con > div:nth-of-type(1) > div.p-parameter > ul.parameter2.p-parameter-list > li'
+        )
+        for info in infos:
+            temp = info.text
+            for i in self.head_list:
+                if i in temp:
+                    head, content = temp.split(self.colon_split)
+                    items[self.head_english_dict.get(head)] = content
+
+        print(items)
+        yield items
+
         if len(self.all_url_list) != 0:
             self.current_url = self.all_url_list.pop(0)
             yield Request(self.current_url, callback=self.parse, dont_filter=True)
+        elif len(self.all_page_url_list) != 0:
+            self.current_url = self.all_page_url_list.pop(0)
+            yield Request(self.current_url, callback=self.per_commodity_url_callback, dont_filter=True)
 
 
 
