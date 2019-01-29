@@ -114,7 +114,8 @@ class JdLipstickSpider(scrapy.Spider):
             temp = info.text
             for i in self.head_list:
                 if i in temp:
-                    head, content = temp.split(self.colon_split)
+                    # 只分隔一次，避免要保存的value中也包含了'：'
+                    head, content = temp.split(self.colon_split, 1)
                     items[self.head_english_dict.get(head)] = content
 
         print(items)
