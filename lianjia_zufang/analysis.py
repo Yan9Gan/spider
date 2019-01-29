@@ -26,6 +26,7 @@ class Analysis(object):
             average_price_list.append(round(total_price/self.db[collection_name].count(), 2))
 
         bar = pyecharts.Bar('广州租房信息分析')
+        bar.use_theme('dark')
         bar.add('每月每平方平均价格', self.collection_name_list, average_price_list)
         bar.render('./analysis_html/average_price.html')
 
@@ -85,7 +86,7 @@ class Analysis(object):
 
 if __name__ == '__main__':
     als = Analysis()
-    als.show_all()
+    als.average_price()
 
 
 
