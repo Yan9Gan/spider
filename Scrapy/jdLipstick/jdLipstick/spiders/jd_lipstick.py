@@ -126,6 +126,8 @@ class JdLipstickSpider(scrapy.Spider):
             yield Request(self.current_url, callback=self.parse, dont_filter=True)
         elif len(self.brand_url_list) != 0:
             self.current_url = self.brand_url_list.pop(0)
+            brand_name = re.search(self.brand_extract_compile, self.current_url).group(1)
+            self.current_brand = unquote(brand_name)
             yield Request(self.current_url, callback=self.per_page_url_callback, dont_filter=True)
 
 
