@@ -13,6 +13,7 @@ class JdLipstickSpider(scrapy.Spider):
     base_url = 'https://search.jd.com/'
     start_url = 'https://search.jd.com/Search?keyword=口红&enc=utf-8&wq=口红&pvid=33b0080a6043490faa5c27eb775a0975'
 
+    current_price = 0
     current_url = ''
     current_brand = ''
     page_url = '&page={}&s=56&click=0'
@@ -122,6 +123,7 @@ class JdLipstickSpider(scrapy.Spider):
         yield items
 
         if len(self.all_url_list) != 0:
+            self.current_price = self.all_price_list.pop(0)
             self.current_url = self.all_url_list.pop(0)
             yield Request(self.current_url, callback=self.parse, dont_filter=True)
         elif len(self.brand_url_list) != 0:
