@@ -28,7 +28,7 @@ class Analysis(object):
         bar = pyecharts.Bar('广州租房信息分析')
         bar.use_theme('dark')
         bar.add('每月每平方平均价格', self.collection_name_list, average_price_list)
-        bar.render('./analysis_html/average_price.html')
+        bar.render('./analysis_html/average_price.visualization')
 
     def area_range(self):
         area_head_list = ['0-25平方米', '25-50平方米', '50-70平方米', '70-100平方米',
@@ -49,7 +49,7 @@ class Analysis(object):
 
         pie = pyecharts.Pie()
         pie.add('面积分布情况', area_head_list, area_list, is_label_show=True)
-        pie.render('./analysis_html/area_range.html')
+        pie.render('./analysis_html/area_range.visualization')
 
     def house_scale(self):
         pattern_compile = re.compile('.*?(\d+)室.*?(\d+)厅')
@@ -81,7 +81,7 @@ class Analysis(object):
 
         pie = pyecharts.Pie()
         pie.add('房屋规模分布', scale_head, scale_sum, is_label_show=True)
-        pie.render('./analysis_html/house_scale.html')
+        pie.render('./analysis_html/house_scale.visualization')
 
 
 if __name__ == '__main__':

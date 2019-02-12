@@ -42,7 +42,7 @@ class Analysis(object):
 
         bar = pyecharts.Bar('京东口红')
         bar.add('各品牌平均价格', head_list, price_list, is_more_utils=True, xaxis_rotate=50, xaxis_name_size=8)
-        bar.render('html/average.html')
+        bar.render('visualization/average.visualization')
 
     def amount(self):
         head_list = []
@@ -60,7 +60,7 @@ class Analysis(object):
 
         pie = pyecharts.Pie('京东口红')
         pie.add('数量', head_list, count_list, is_label_show=True)
-        pie.render('html/amount.html')
+        pie.render('visualization/amount.visualization')
 
     def title_extract(self):
         string = ''
@@ -74,21 +74,21 @@ class Analysis(object):
                 string += color_type
 
         image_path = 'kouhong.jpg'
-        backgroud_image = plt.imread(image_path)
+        background_image = plt.imread(image_path)
         collection_string = ' '.join(self.collections)
         stop_list = list(jieba.cut(collection_string))
         stop_list += ['正常发货', '顺丰配送', '京东配达', '国内专柜', '京东送达', '专柜正品', '其它']
 
         wc = WordCloud(
             background_color="white",
-            mask=backgroud_image,
+            mask=background_image,
             max_words=2000,
             stopwords=stop_list,
             max_font_size=100,
             random_state=30
         )
         wc.generate_from_text(string)
-        img_colors = ImageColorGenerator(backgroud_image)
+        img_colors = ImageColorGenerator(background_image)
         wc.recolor(color_func=img_colors)
         wc.to_file('temp.jpg')
 
