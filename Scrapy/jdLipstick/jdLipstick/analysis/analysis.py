@@ -1,6 +1,5 @@
 import jieba
 import pyecharts
-from fuzzywuzzy import fuzz
 from pymongo import MongoClient
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, ImageColorGenerator
@@ -42,7 +41,7 @@ class Analysis(object):
 
         bar = pyecharts.Bar('京东口红')
         bar.add('各品牌平均价格', head_list, price_list, is_more_utils=True, xaxis_rotate=50, xaxis_name_size=8)
-        bar.render('visualization/average.visualization')
+        bar.render('visualization/average.html')
 
     def amount(self):
         head_list = []
@@ -60,7 +59,7 @@ class Analysis(object):
 
         pie = pyecharts.Pie('京东口红')
         pie.add('数量', head_list, count_list, is_label_show=True)
-        pie.render('visualization/amount.visualization')
+        pie.render('visualization/amount.html')
 
     def title_extract(self):
         string = ''
@@ -73,7 +72,7 @@ class Analysis(object):
                 string += title
                 string += color_type
 
-        image_path = 'kouhong.jpg'
+        image_path = 'heart.jpg'
         background_image = plt.imread(image_path)
         collection_string = ' '.join(self.collections)
         stop_list = list(jieba.cut(collection_string))
@@ -90,11 +89,32 @@ class Analysis(object):
         wc.generate_from_text(string)
         img_colors = ImageColorGenerator(background_image)
         wc.recolor(color_func=img_colors)
-        wc.to_file('temp.jpg')
+        wc.to_file('visualization/title_extract.jpg')
+
+    def color_distribution(self):
+        color_type_dict = {}
+
+        for collection_name in self.collections:
+            for item in self.db[collection_name].find():
+                if 'color_type' not in item.keys():
+                    continue
+
+                color_type = item['color_type']
+                if color_type == '其它':
+                    continue
+
+                if color_type in color_type_dict.keys():
+                    color_type_dict[color_type] += 1
+                else:
+                    color_type_dict[color_type] = 1
+
+        pie = pyecharts.Pie()
+        pie.add('色系分布', list(color_type_dict.keys()), list(color_type_dict.values()), is_label_show=True)
+        pie.render('visualization/color_distribution.html')
 
 
 if __name__ == '__main__':
     al = Analysis()
-    al.title_extract()
+    al.color_distribution()
 
 
