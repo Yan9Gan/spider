@@ -47,6 +47,9 @@ DEFAULT_REQUEST_HEADERS = {
     'Cookie': 'JSESSIONID=6CF27ACD0C978717EB7097F100C29AFB; _jc_save_wfdc_flag=dc; RAIL_EXPIRATION=1550202191754; RAIL_DEVICEID=E8xRDEJUOodp9Sm03oDchOO-u-Y75UGZ2rvOhN3Q7gmvnxBZkMCpRmc4pt3D08p5E2NFwad7tv_6tTo8g9vFuPY9aKMmbpFrecEArSH3vZ_wvFGgGOXb1NoL2qLbK7Jlw3t0S4Xqz9biAS_vl4JIg2wXQw6BqVxs; _jc_save_fromStation=%u6F6E%u6C55%2CCBQ; BIGipServerotn=3990290698.64545.0000; BIGipServerpassport=854065418.50215.0000; route=495c805987d0f5c8c84b14f60212447d; BIGipServerportal=3168010506.16671.0000; _jc_save_toDate=2019-02-13; _jc_save_toStation=%u5E7F%u5DDE%2CGZQ; _jc_save_fromDate=2019-02-13'
 }
 
+MONGO_URI = "localhost:27017"
+MONGO_DB = "railway"
+
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
@@ -67,9 +70,9 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'railway.pipelines.RailwayPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'railway.pipelines.MongoPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
