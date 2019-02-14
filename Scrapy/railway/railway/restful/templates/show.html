@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>车票信息</title>
+</head>
+<body>
+<table border="1" style="text-align: center">
+    <tr><td colspan="{{ colspan }}">{{ from_station }}-->{{ to_station }}&nbsp;&nbsp;{{ date }}</td></tr>
+    <tr>
+        {% for head in head_list %}
+        <td>{{ head }}</td>
+        {% endfor %}
+    </tr>
+    {% for item in items_list %}
+    <tr>
+        {% for i in item %}
+            <td>{{ i }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

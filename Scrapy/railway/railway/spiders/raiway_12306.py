@@ -8,7 +8,7 @@ from railway.items import RailwayItem
 
 
 class Raiway12306Spider(scrapy.Spider):
-    name = 'raiway_12306'
+    name = 'railway_12306'
     allowed_domains = ['www.12306.cn']
     start_urls = 'https://kyfw.12306.cn/otn/leftTicket/queryZ?leftTicketDTO.train_date={}&leftTicketDTO.from_station={}&leftTicketDTO.to_station={}&purpose_codes=ADULT'
 
@@ -50,7 +50,11 @@ class Raiway12306Spider(scrapy.Spider):
             to_time = item_list[9]
             duration = item_list[10]
 
-            if train_number[0] in ['C', 'D', 'G']:
+            if from_time == to_time or duration == '99:59':
+                train_number = from_station = to_station = from_time, to_time = duration =\
+                    tdz = ydz = edz = gjrw = rw = dw = yw = rz = yz = wz = '-'
+
+            elif train_number[0] in ['C', 'D', 'G']:
                 tdz = item_list[32] or '-'  # 商务座/特等座
                 ydz = item_list[31] or '-'  # 一等座
                 edz = item_list[30] or '-'  # 二等座

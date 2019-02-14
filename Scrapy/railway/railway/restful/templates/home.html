@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>火车票查询系统</title>
+</head>
+<body>
+<div align="center">
+    <form action="/show" method="post" name="form">
+        <h1>火车票查询系统</h1>
+        <hr>
+        <br>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        出发站 <input type="text" name="from" placeholder="from"><br><br>
+        到达站 <input type="text" name="to" placeholder="to"><br><br>
+        出发时间 <input type="text" name="date" placeholder="date"><br>
+        (格式：年-月-日，位数不足2位前面加0，如2019-01-01)
+        <br><br>
+        <input type="submit" value="确定">
+    </form>
+</div>
+</body>
+</html>
