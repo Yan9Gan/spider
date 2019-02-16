@@ -120,7 +120,7 @@ class Analysis(object):
         describe_string_list = jieba.cut(describe_string)
         new_string = ' '.join(describe_string_list)
 
-        stop_list = ['任职', '要求']
+        stop_list = ['任职', '要求', '优先']
         wc = WordCloud(
             max_words=2000,
             max_font_size=100,
@@ -133,6 +133,6 @@ class Analysis(object):
 
 if __name__ == '__main__':
     al = Analysis()
-    al.show_all()
+    al.describe()
 
 
