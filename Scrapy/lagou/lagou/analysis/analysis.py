@@ -44,7 +44,7 @@ class Analysis(object):
 
         bar = pyecharts.Bar('python岗位分析')
         bar.add('平均月薪', head_list, average_list, is_more_utils=True)
-        bar.render('visualization/average.html')
+        bar.render('visualization/average.visualization')
 
     def experience_distribution(self):
         distribution_dict = {}
@@ -59,7 +59,7 @@ class Analysis(object):
 
         pie = pyecharts.Pie()
         pie.add('工作经验需求分布', list(distribution_dict.keys()), list(distribution_dict.values()), is_label_show=True)
-        pie.render('visualization/experience_distribution.html')
+        pie.render('visualization/experience_distribution.visualization')
 
     def education_needs(self):
         needs_dict = {}
@@ -74,7 +74,7 @@ class Analysis(object):
 
         pie = pyecharts.Pie()
         pie.add('学历需求', list(needs_dict.keys()), list(needs_dict.values()), is_label_show=True)
-        pie.render('visualization/education_needs.html')
+        pie.render('visualization/education_needs.visualization')
 
     def labels(self):
         labels_string = ''
