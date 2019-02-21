@@ -10,7 +10,7 @@ CsrfProtect(app)
 
 @app.route('/')
 def railway():
-    return render_template('home.visualization')
+    return render_template('home.html')
 
 
 @app.route('/show', methods=['GET', 'POST'])
@@ -22,7 +22,7 @@ def show_data():
     RWQ = rq.RailWayQuery(from_station, to_station, date)
     head_list, items_list = RWQ.spider()
 
-    return render_template('show.visualization', head_list=head_list, items_list=items_list,
+    return render_template('show.html', head_list=head_list, items_list=items_list,
                            colspan=len(head_list), from_station=from_station,
                            to_station=to_station, date=date)
 

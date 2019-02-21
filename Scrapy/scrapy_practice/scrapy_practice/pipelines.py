@@ -7,13 +7,13 @@
 from pymongo import MongoClient
 
 
-class RailwayPipeline(object):
+class ScrapyPracticePipeline(object):
     def process_item(self, item, spider):
         return item
 
 
 class MongoPipeline(object):
-    collection = 'railway'
+    collection = 'practice'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -31,11 +31,8 @@ class MongoPipeline(object):
         self.db = self.client[self.mongo_db]
 
     def process_item(self, item, spider):
-        self.collection = item['id']
         self.db[self.collection].insert(dict(item))
-
         return item
 
     def close_spider(self, spider):
         self.client.close()
-

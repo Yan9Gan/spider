@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for railway project
+# Scrapy settings for fangtianxia_house project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,62 +9,51 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'railway'
+BOT_NAME = 'fangtianxia_house'
 
-SPIDER_MODULES = ['railway.spiders']
-NEWSPIDER_MODULE = 'railway.spiders'
+SPIDER_MODULES = ['fangtianxia_house.spiders']
+NEWSPIDER_MODULE = 'fangtianxia_house.spiders'
 
-FEED_EXPORT_ENCODING = 'utf-8'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'railway (+http://www.yourdomain.com)'
+#USER_AGENT = 'fangtianxia_house (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-# CONCURRENT_REQUESTS = 32
+#CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 3
+#DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = False
-
-REDIRECT_ENABLED = False
-METAREFRESH_ENABLED = False
-HTTPERROR_ALLOWED_CODES = [301, 302]
+#COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-DEFAULT_REQUEST_HEADERS = {
-    'Accept': 'text/visualization,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'en',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
-    'Cookies': 'JSESSIONID=4ACCE92BE44BCF01BBF06EE8C82100B2; _jc_save_wfdc_flag=dc; RAIL_EXPIRATION=1550202191754; RAIL_DEVICEID=E8xRDEJUOodp9Sm03oDchOO-u-Y75UGZ2rvOhN3Q7gmvnxBZkMCpRmc4pt3D08p5E2NFwad7tv_6tTo8g9vFuPY9aKMmbpFrecEArSH3vZ_wvFGgGOXb1NoL2qLbK7Jlw3t0S4Xqz9biAS_vl4JIg2wXQw6BqVxs; BIGipServerpassport=887619850.50215.0000; route=c5c62a339e7744272a54643b3be5bf64; _jc_save_toDate=2019-02-14; _jc_save_fromDate=2019-02-28; _jc_save_toStation=%u5E7F%u5DDE%2CGZQ; _jc_save_fromStation=%u6F6E%u6C55%2CCBQ; BIGipServerportal=3084124426.16671.0000; BIGipServerotn=586154506.24610.0000'
-}
-
-MONGO_URI = "localhost:27017"
-MONGO_DB = "railway"
-
+#DEFAULT_REQUEST_HEADERS = {
+#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+#   'Accept-Language': 'en',
+#}
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'railway.middlewares.RailwaySpiderMiddleware': 543,
+#    'fangtianxia_house.middlewares.FangtianxiaHouseSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'railway.middlewares.RailwayDownloaderMiddleware': 543,
+#    'fangtianxia_house.middlewares.FangtianxiaHouseDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -75,9 +64,9 @@ MONGO_DB = "railway"
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   'railway.pipelines.MongoPipeline': 300,
-}
+#ITEM_PIPELINES = {
+#    'fangtianxia_house.pipelines.FangtianxiaHousePipeline': 300,
+#}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
