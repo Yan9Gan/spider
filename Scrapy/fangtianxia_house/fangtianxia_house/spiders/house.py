@@ -31,11 +31,16 @@ class HouseSpider(scrapy.Spider):
         self.key_correspondence = {
             '物业类别': 'property_type',
             '项目特色': 'feature',
+            '楼盘特色': 'feature',
+            '写字楼级别': 'level',
             '建筑类别': 'house_type',
             '装修状况': 'decoration_status',
+            '装修情况': 'decoration_status',
+            '楼栋情况': 'decoration_status',
             '产权年限': 'property_right',
             '环线位置': 'location',
             '开发商': 'developers',
+            '所属商圈': 'trade_area',
             '楼盘地址': 'house_address',
             '销售状态': 'sale_status',
             '楼盘优惠': 'sale_discount',
@@ -45,8 +50,13 @@ class HouseSpider(scrapy.Spider):
             '咨询电话': 'phone',
             '主力户型': 'main_house_type',
             '占地面积': 'area_cover',
+            '标准层面积': 'floor_area',
+            '商业面积': 'business_area',
+            '办公面积': 'office_area',
+            '开间面积': 'bay_area',
             '建筑面积': 'area_build',
             '容积率': 'plot_rate',
+            '标准层高': 'floor_height',
             '绿化率': 'green_rate',
             '停车位': 'park',
             '楼栋总数': 'house_num',
@@ -55,6 +65,7 @@ class HouseSpider(scrapy.Spider):
             '物业费': 'property_cost',
             '物业费描述': 'property_cost_description',
             '楼层状况': 'floor_status',
+            '楼层说明': 'floor_status',
         }
 
         self.per_page_url_list = []
@@ -138,6 +149,9 @@ class HouseSpider(scrapy.Spider):
 
                 value = content.split('：')[1].strip()
                 value = ','.join(re.split(self.blank_compile, value))
+
+                if '许可证' in key:
+                    continue
 
                 if value == '':
                     continue

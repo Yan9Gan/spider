@@ -14,11 +14,13 @@ class FangtianxiaHouseItem(scrapy.Item):
     average_price = scrapy.Field()  # 均价
     property_type = scrapy.Field()  # 物业类别
     feature = scrapy.Field()  # 项目特色
+    level = scrapy.Field()  # 写字楼级别
     house_type = scrapy.Field()  # 建筑类别
     decoration_status = scrapy.Field()  # 装修状况
     property_right = scrapy.Field()  # 产权年限
     location = scrapy.Field()  # 环线位置
     developers = scrapy.Field()  # 开发商
+    trade_area = scrapy.Field()  # 所属商圈
     house_address = scrapy.Field()  # 楼盘地址
     sale_status = scrapy.Field()  # 销售状态
     sale_discount = scrapy.Field()  # 销售优惠
@@ -28,8 +30,13 @@ class FangtianxiaHouseItem(scrapy.Item):
     phone = scrapy.Field()  # 咨询电话
     main_house_type = scrapy.Field()  # 主力户型
     area_cover = scrapy.Field()  # 占地面积
+    floor_area = scrapy.Field()  # 标准层面积
+    business_area = scrapy.Field()  # 商业面积
+    office_area = scrapy.Field()  # 办公面积
+    bay_area = scrapy.Field()  # 开间面积
     area_build = scrapy.Field()  # 建筑面积
     plot_rate = scrapy.Field()  # 容积率
+    floor_height = scrapy.Field()  # 标准层高
     green_rate = scrapy.Field()  # 绿化率
     park = scrapy.Field()  # 停车位
     house_num = scrapy.Field()  # 楼栋总数
