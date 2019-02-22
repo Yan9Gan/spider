@@ -5,6 +5,7 @@ import json
 import scrapy
 from bs4 import BeautifulSoup
 from scrapy.http import Request
+from fangtianxia_house.items import FangtianxiaHouseItem
 
 
 class HouseSpider(scrapy.Spider):
@@ -25,6 +26,36 @@ class HouseSpider(scrapy.Spider):
         self.detail_code_compile = re.compile('.*?(\d{10}).*?')
         self.price_compile = re.compile('.*?(\d+.*?)元.*?')
         self.park_compile = re.compile('.*?(\d+).*?')
+        self.blank_compile = re.compile('\s+')
+
+        self.key_correspondence = {
+            '物业类别': 'property_type',
+            '项目特色': 'feature',
+            '建筑类别': 'house_type',
+            '装修状况': 'decoration_status',
+            '产权年限': 'property_right',
+            '环线位置': 'location',
+            '开发商': 'developers',
+            '楼盘地址': 'house_address',
+            '销售状态': 'sale_status',
+            '楼盘优惠': 'sale_discount',
+            '开盘时间': 'open_time',
+            '交房时间': 'hand_time',
+            '售楼地址': 'sale_address',
+            '咨询电话': 'phone',
+            '主力户型': 'main_house_type',
+            '占地面积': 'area_cover',
+            '建筑面积': 'area_build',
+            '容积率': 'plot_rate',
+            '绿化率': 'green_rate',
+            '停车位': 'park',
+            '楼栋总数': 'house_num',
+            '总户数': 'room_num',
+            '物业公司': 'property_company',
+            '物业费': 'property_cost',
+            '物业费描述': 'property_cost_description',
+            '楼层状况': 'floor_status',
+        }
 
         self.per_page_url_list = []
         self.detail_url_list = []
@@ -62,134 +93,65 @@ class HouseSpider(scrapy.Spider):
             yield Request(self.current_url, callback=self.parse, dont_filter=True)
 
     def parse(self, response):
+        item = FangtianxiaHouseItem()
+
         soup = BeautifulSoup(response.body, 'html5lib')
 
         # 名字
         name = soup.select(
             '#daohang > div > div.lpname.fl > dl > dd > div.lpbt.tf.jq_nav > h1 > a'
         )[0].text
+        item['name'] = name
 
         # 均价
         average_price = soup.select(
             'div.main-left > div:nth-of-type(1) > div > div > em'
         )[0].text.strip()
-        average_price = re.search(self.price_compile, average_price).group(1)
+        try:
+            average_price = re.search(self.price_compile, average_price).group(1)
+        except AttributeError:
+            average_price = average_price
+        item['average_price'] = average_price
 
-        # 物业类型
-        property_type = soup.select(
-            'div.main-left > div:nth-of-type(1) > ul > li:nth-of-type(1) > div.list-right'
-        )[0].text.strip()
-
-        # 特色
-        features = soup.select(
-            'div.main-left > div:nth-of-type(1) > ul > li:nth-of-type(2) > div.list-right > span'
+        # 楼盘信息
+        house_infos = soup.select(
+            'div.main-left > div:nth-of-type(1) > ul > li'
         )
-        feature = ''
-        for item in features:
-            feature += item.text + ','
-        feature = feature[:-1]
-
-        # 建筑类别
-        house_type = soup.select(
-            'div.main-left > div:nth-of-type(1) > ul > li:nth-of-type(3) > div.list-right > span'
-        )[0].text.strip().replace('\n', ' ')
-        house_type = ','.join(re.split('\s+', ' '.join(house_type.split(' '))))
-
-        # 装修状况
-        house_status = soup.select(
-            'div.main-left > div:nth-of-type(1) > ul > li:nth-of-type(4) > div.list-right'
-        )[0].text.strip()
-
-        # 产权
-        property_rights = soup.select(
-            'div.main-left > div:nth-of-type(1) > ul > li:nth-of-type(5) > div.list-right > div > p'
+        # 销售信息
+        sale_infos = soup.select(
+            'div.main-left > div:nth-of-type(2) > ul > li'
         )
-        property_right = ''
-        for item in property_rights:
-            property_right += item.text + ','
-        property_right = property_right[:-1]
-
-        # 环线位置
-        location = soup.select(
-            'div.main-left > div:nth-of-type(1) > ul > li:nth-of-type(6) > div.list-right'
-        )[0].text.strip()
-
-        # 开发商
-        developers = soup.select(
-            'div.main-left > div:nth-of-type(1) > ul > li:nth-of-type(7) > div.list-right-text > a'
+        # 小区规划
+        community_planning = soup.select(
+            'div.main-left > div:nth-of-type(4) > ul > li'
         )
-        developer = ''
-        for item in developers:
-            developer += item.text + ','
-        developer = developer[:-1]
+        # 周边设施
+        periphery_facilities_infos = soup.select(
+            'div.main-left > div:nth-of-type(3) > ul > li'
+        )
 
-        # 楼盘地址
-        address = soup.select(
-            'div.main-left > div:nth-of-type(1) > ul > li:nth-of-type(8) > div.list-right-text'
-        )[0].text
+        for infos in [house_infos, sale_infos, community_planning]:
+            for info in infos:
+                content = info.text
+                key = content.split('：')[0].strip()
+                key = ''.join(re.split(self.blank_compile, key))
 
-        # 销售状态
-        sale_status = soup.select(
-            'div.main-left > div:nth-of-type(2) > ul > li:nth-of-type(1) > div.list-right'
-        )[0].text.strip()
+                value = content.split('：')[1].strip()
+                value = ','.join(re.split(self.blank_compile, value))
 
-        # 优惠
-        discount = soup.select(
-            'div.main-left > div:nth-of-type(2) > ul > li:nth-of-type(2) > div.list-right'
-        )[0].text.strip()
+                if value == '':
+                    continue
 
-        # 开盘时间
-        open_time = soup.select(
-            'div.main-left > div:nth-of-type(2) > ul > li:nth-of-type(3) > div.list-right'
-        )[0].text.replace('[开盘时间详情]', '')
+                print(key)
+                item[self.key_correspondence.get(key)] = value
 
-        # 交房时间
-        hand_time = soup.select(
-            'div.main-left > div:nth-of-type(2) > ul > li:nth-of-type(4) > div.list-right'
-        )[0].text
+        facilities = ''
+        for info in periphery_facilities_infos:
+            content = info.text
+            facilities += content
+        item['facilities'] = facilities
 
-        # 售楼地址
-        sale_address = soup.select(
-            'div.main-left > div:nth-of-type(2) > ul > li:nth-of-type(5) > div.list-right'
-        )[0].text
-
-        # 咨询电话
-        phone = soup.select(
-            'div.main-left > div:nth-of-type(2) > ul > li:nth-of-type(6) > div.list-right.c00'
-        )[0].text
-
-        # 主办户型
-        major_apartments = soup.select(
-            'div.main-left > div:nth-of-type(2) > ul > li:nth-of-type(7) > div.list-right-text'
-        )[0].text
-        major_apartment = ''.join(re.split('\s+', major_apartments.strip()))
-
-        # 占地面积
-        area_cover = soup.select(
-            'div.main-left > div:nth-of-type(4) > ul > li:nth-of-type(1) > div.list-right'
-        )[0].text
-
-        # 建筑面积
-        area_build = soup.select(
-            'div.main-left > div:nth-of-type(4) > ul > li:nth-of-type(2) > div.list-right'
-        )[0].text
-
-        # 容积率
-        volume_ratio = soup.select(
-            'div.main-left > div:nth-of-type(4) > ul > li:nth-of-type(3) > div.list-right'
-        )[0].text.strip()
-
-        # 绿化率
-        green_ratio = soup.select(
-            'div.main-left > div:nth-of-type(4) > ul > li:nth-of-type(4) > div.list-right'
-        )[0].text
-
-        print(name, average_price, property_type, feature, house_type, house_status)
-        print(property_right, location)
-        print(developer, address)
-        print(sale_status, discount, open_time, hand_time)
-        print(sale_address, phone, major_apartment)
-        print(area_cover, area_build, volume_ratio, green_ratio, park_num)
+        yield item
 
         if len(self.detail_url_list) != 0:
             self.current_url = self.detail_url_list.pop(0)
