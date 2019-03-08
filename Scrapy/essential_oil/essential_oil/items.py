@@ -28,3 +28,10 @@ class EssentialOilItem(scrapy.Item):
     position_suitable = scrapy.Field()  # 适用部位
     net_content = scrapy.Field()  # 净含量
     good_rate = scrapy.Field()  # 好评率
+    impression = scrapy.Field()  # 买家印象
+    image = scrapy.Field()  # 晒图
+    video = scrapy.Field()  # 视频晒单
+    add = scrapy.Field()  # 追评
+    good = scrapy.Field()  # 好评
+    normal = scrapy.Field()  # 中评
+    bad = scrapy.Field()  # 差评

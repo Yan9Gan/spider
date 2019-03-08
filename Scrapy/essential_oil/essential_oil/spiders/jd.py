@@ -34,6 +34,7 @@ class JdSpider(scrapy.Spider):
         self.detail_url_list = []
 
         self.url_compile = re.compile('(.*?)(&wq=.*)(&pvid=.*)')
+        self.comment_compile = re.compile('\((.*)\)')
 
         self.chinese_to_english_dict = {
             '商品名称': 'name',
@@ -49,6 +50,12 @@ class JdSpider(scrapy.Spider):
             '分类': 'classify',
             '适用人群': 'people_suitable',
             '适用部位': 'position_suitable',
+            '晒图': 'image',
+            '视频晒单': 'video',
+            '追评': 'add',
+            '好评': 'good',
+            '中评': 'normal',
+            '差评': 'bad',
         }
 
         self.colon_split = '：'
@@ -97,9 +104,12 @@ class JdSpider(scrapy.Spider):
         items = {'brand': '', 'url': '', 'title': '', 'price': '', 'name': '', 'number': '',
                  'weight': '', 'net_content': '', 'origin': '', 'item_num': '',
                  'skin_suitable': '', 'effect': '', 'type': '', 'source': '', 'classify': '',
-                 'people_suitable': '', 'position_suitable': '', 'good_rate': ''}
+                 'people_suitable': '', 'position_suitable': '', 'good_rate': '', 'impression': '',
+                 'image': '', 'video': '', 'add': '', 'good': '', 'normal': '', 'bad': ''}
 
-        title = response.xpath('/html/body/div[8]/div/div[2]/div[1]/text()').extract_first().strip()
+        title = response.xpath('/html/body/div[8]/div/div[2]/div[1]/text()').extract_first()
+        if title:
+            items['title'] = title.strip()
         price = response.xpath('/html/body/div[8]/div/div[2]/div[4]/div/div[1]/div[2]/span[1]/span[2]/text()').extract_first()
 
         brand = response.xpath('//*[@id="parameter-brand"]/li/a/text()').extract_first()
@@ -113,12 +123,32 @@ class JdSpider(scrapy.Spider):
                 head = self.chinese_to_english_dict.get(head)
                 items[head] = content
 
+        try:
+            impression_tags = response.xpath('//*[@id="comment"]/div[2]/div[1]/div[2]/div/span')
+            temp_list = []
+            for tag in impression_tags:
+                temp_list.append(tag.xpath('./text()').extract_first())
+        except:
+            impression = ''
+        else:
+            impression = ','.join(temp_list)
+        items['impression'] = impression
+
+        comment_infos = response.xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li')
+        for comment in comment_infos:
+            head = comment.xpath('./a/text()').extract_first()
+            num = comment.xpath('./a/em/text()').extract_first()
+            if head in self.chinese_to_english_dict.keys():
+                head = self.chinese_to_english_dict.get(head)
+                num = re.search(self.comment_compile, num).group(1)
+                items[head] = num
+
         items['url'] = self.current_url
-        items['title'] = title
         items['price'] = price
 
         good_rate = response.xpath('//*[@id="comment"]/div[2]/div[1]/div[1]/div/text()').extract_first()
-        items['good_rate'] = good_rate
+        if good_rate:
+            items['good_rate'] = good_rate + '%'
 
         yield items
 
@@ -131,9 +161,3 @@ class JdSpider(scrapy.Spider):
             yield Request(self.current_url, callback=self.get_detail, dont_filter=True)
 
 
-# &wq=%E8%96%B0%E8%A1%A3%E8%8D%89%E7%B2%BE%E6%B2%B9
-# &pvid=e29962d736954e979e956e5202e6bb9d
-
-# &enc=utf-8&qrst=1&rt=1&stop=1&vt=2
-# &wq=%E8%96%B0%E8%A1%A3%E8%8D%89%E7%B2%BE%E6%B2%B9
-# &stock=1&page={}&s={}&click=0
