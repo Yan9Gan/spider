@@ -61,7 +61,7 @@ class JdSpider(scrapy.Spider):
         self.colon_split = '：'
 
         self.browser = webdriver.Chrome()
-        self.browser.set_page_load_timeout(30)
+        # self.browser.set_page_load_timeout(30)
 
     def closed(self, spider):
         print("spider closed")
@@ -90,67 +90,80 @@ class JdSpider(scrapy.Spider):
             yield Request(self.current_url, callback=self.get_detail, dont_filter=True)
 
     def get_detail(self, response):
-        detail_lis = response.xpath('//*[@id="J_goodsList"]/ul/li')
-        for li in detail_lis:
-            url = li.xpath('./div/div/a/@href').extract_first()
-            if url and url.startswith('//item'):
-                self.detail_url_list.append('https:' + url)
+        if response.status == 500:
+            if len(self.page_url_list) != 0:
+                self.current_url = self.page_url_list.pop(0)
+                yield Request(self.current_url, callback=self.get_detail, dont_filter=True)
+        else:
+            detail_lis = response.xpath('//*[@id="J_goodsList"]/ul/li')
+            for li in detail_lis:
+                url = li.xpath('./div/div/a/@href').extract_first()
+                if url and url.startswith('//item'):
+                    self.detail_url_list.append('https:' + url)
 
-        if len(self.detail_url_list) != 0:
-            self.current_url = self.detail_url_list.pop(0)
-            yield Request(self.current_url, callback=self.parse, dont_filter=True)
+            if len(self.detail_url_list) != 0:
+                self.current_url = self.detail_url_list.pop(0)
+                yield Request(self.current_url, callback=self.parse, dont_filter=True)
 
     def parse(self, response):
-        items = {'brand': '', 'url': '', 'title': '', 'price': '', 'name': '', 'number': '',
-                 'weight': '', 'net_content': '', 'origin': '', 'item_num': '',
-                 'skin_suitable': '', 'effect': '', 'type': '', 'source': '', 'classify': '',
-                 'people_suitable': '', 'position_suitable': '', 'good_rate': '', 'impression': '',
-                 'image': '', 'video': '', 'add': '', 'good': '', 'normal': '', 'bad': ''}
-
-        title = response.xpath('/html/body/div[8]/div/div[2]/div[1]/text()').extract_first()
-        if title:
-            items['title'] = title.strip()
-        price = response.xpath('/html/body/div[8]/div/div[2]/div[4]/div/div[1]/div[2]/span[1]/span[2]/text()').extract_first()
-
-        brand = response.xpath('//*[@id="parameter-brand"]/li/a/text()').extract_first()
-        items['brand'] = brand
-
-        infos = response.xpath('//*[@id="detail"]/div[2]/div[1]/div[1]/ul[2]/li')
-        for info in infos:
-            contents = info.xpath('./text()').extract_first()
-            head, content = contents.split(self.colon_split)
-            if head in self.chinese_to_english_dict.keys():
-                head = self.chinese_to_english_dict.get(head)
-                items[head] = content
-
-        try:
-            impression_tags = response.xpath('//*[@id="comment"]/div[2]/div[1]/div[2]/div/span')
-            temp_list = []
-            for tag in impression_tags:
-                temp_list.append(tag.xpath('./text()').extract_first())
-        except:
-            impression = ''
+        if response.status == 500:
+            if len(self.detail_url_list) != 0:
+                self.current_url = self.detail_url_list.pop(0)
+                yield Request(self.current_url, callback=self.parse, dont_filter=True)
         else:
-            impression = ','.join(temp_list)
-        items['impression'] = impression
+            items = {'brand': '', 'url': '', 'title': '', 'price': '', 'name': '', 'number': '',
+                     'weight': '', 'net_content': '', 'origin': '', 'item_num': '',
+                     'skin_suitable': '', 'effect': '', 'type': '', 'source': '', 'classify': '',
+                     'people_suitable': '', 'position_suitable': '', 'good_rate': '', 'impression': '',
+                     'image': '', 'video': '', 'add': '', 'good': '', 'normal': '', 'bad': ''}
 
-        comment_infos = response.xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li')
-        for comment in comment_infos:
-            head = comment.xpath('./a/text()').extract_first()
-            num = comment.xpath('./a/em/text()').extract_first()
-            if head in self.chinese_to_english_dict.keys():
-                head = self.chinese_to_english_dict.get(head)
-                num = re.search(self.comment_compile, num).group(1)
-                items[head] = num
+            title = response.xpath('/html/body/div[8]/div/div[2]/div[1]/text()').extract_first()
+            if title:
+                items['title'] = title.strip()
+            price = response.xpath('/html/body/div[8]/div/div[2]/div[4]/div/div[1]/div[2]/span[1]/span[2]/text()').extract_first()
 
-        items['url'] = self.current_url
-        items['price'] = price
+            brand = response.xpath('//*[@id="parameter-brand"]/li/a/text()').extract_first()
+            items['brand'] = brand
 
-        good_rate = response.xpath('//*[@id="comment"]/div[2]/div[1]/div[1]/div/text()').extract_first()
-        if good_rate:
-            items['good_rate'] = good_rate + '%'
+            infos = response.xpath('//*[@id="detail"]/div[2]/div[1]/div[1]/ul[2]/li')
+            for info in infos:
+                contents = info.xpath('./text()').extract_first()
+                try:
+                    head, content = contents.split(self.colon_split)
+                    if head in self.chinese_to_english_dict.keys():
+                        head = self.chinese_to_english_dict.get(head)
+                        items[head] = content
+                except ValueError:
+                    continue
 
-        yield items
+            try:
+                impression_tags = response.xpath('//*[@id="comment"]/div[2]/div[1]/div[2]/div/span')
+                temp_list = []
+                for tag in impression_tags:
+                    temp_list.append(tag.xpath('./text()').extract_first())
+            except:
+                impression = ''
+            else:
+                impression = ','.join(temp_list)
+            items['impression'] = impression
+
+            comment_infos = response.xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li')
+            for comment in comment_infos:
+                head = comment.xpath('./a/text()').extract_first()
+                num = comment.xpath('./a/em/text()').extract_first()
+                if head in self.chinese_to_english_dict.keys():
+                    head = self.chinese_to_english_dict.get(head)
+                    num = re.search(self.comment_compile, num).group(1)
+                    items[head] = num
+
+            items['url'] = self.current_url
+            items['price'] = price
+
+            good_rate = response.xpath('//*[@id="comment"]/div[2]/div[1]/div[1]/div/text()').extract_first()
+            if good_rate:
+                items['good_rate'] = good_rate + '%'
+
+            yield items
 
         if len(self.detail_url_list) != 0:
             self.current_url = self.detail_url_list.pop(0)

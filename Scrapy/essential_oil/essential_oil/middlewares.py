@@ -15,13 +15,17 @@ class SeleniumMiddleware(object):
     def process_request(self, request, spider):
         if spider.name == 'jd':
             try:
+                spider.browser.implicitly_wait(10)
                 spider.browser.get(request.url)
                 spider.browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
             except TimeoutException:
                 print('超时')
-                spider.browser.execute_script('window.stop()')
-            time.sleep(2)
-            return HtmlResponse(url=spider.browser.current_url, body=spider.browser.page_source, encoding="utf-8", request=request)
+                # spider.browser.execute_script('window.stop()')
+                time.sleep(2)
+                return HtmlResponse(url=request.url, status=500, request=request)
+            else:
+                time.sleep(2)
+                return HtmlResponse(url=spider.browser.current_url, body=spider.browser.page_source, encoding="utf-8", request=request)
 
 
 class EssentialOilSpiderMiddleware(object):
