@@ -3,6 +3,7 @@ import re
 import random
 import string
 import scrapy
+import logging
 from selenium import webdriver
 from scrapy.http import Request
 from urllib.parse import urlencode
@@ -19,6 +20,8 @@ class JdSpider(scrapy.Spider):
         'wq': '',
         'pvid': '3dc381b4b6c847b8a1ebdf9c31e6fce3'
     }
+
+    logger = logging.getLogger('jd')
 
     def __init__(self, keyword, *args, **kwargs):
         super(JdSpider, self).__init__(*args, **kwargs)
@@ -60,7 +63,7 @@ class JdSpider(scrapy.Spider):
 
         self.colon_split = '：'
 
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.PhantomJS()
         # self.browser.set_page_load_timeout(30)
 
     def closed(self, spider):
@@ -78,6 +81,7 @@ class JdSpider(scrapy.Spider):
         yield Request(self.current_url, callback=self.get_page, dont_filter=True)
 
     def get_page(self, response):
+        print(response.body)
         pages = int(response.xpath('//*[@id="J_topPage"]/span/i/text()').extract_first())
         for page in range(pages):
             url_list = re.findall(self.url_compile, self.current_url)[0]
@@ -106,6 +110,7 @@ class JdSpider(scrapy.Spider):
                 yield Request(self.current_url, callback=self.parse, dont_filter=True)
 
     def parse(self, response):
+        self.logger.info(response.status)
         if response.status == 500:
             if len(self.detail_url_list) != 0:
                 self.current_url = self.detail_url_list.pop(0)
